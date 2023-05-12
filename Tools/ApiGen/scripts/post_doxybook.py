@@ -34,7 +34,7 @@ def process_doxybook_file(input_dir, output_dir, file_path):
         index = link_match.end()
         link_text, link_ref = link_match.groups()
         # fix internal links: [...](file.md#anchor) => [...](#anchor)
-        if link_ref.startswith('{}#'.format(filename)):
+        if link_ref.startswith(f'{filename}#'):
             link_ref = link_ref[len(filename):]
         # remove "class_" prefix from all filenames in links or references
         for prefix in ('class', 'struct'):
@@ -48,7 +48,7 @@ def process_doxybook_file(input_dir, output_dir, file_path):
         # function-uuxtboundscontrolcomponent, function-uuxtboundscontrolcomponent-1, function-uuxtboundscontrolcomponent-2, ...
         if '~' in link_ref:
             link_ref = link_ref.replace('~', '')
-        new_contents.append('[{}]({})'.format(link_text, link_ref))
+        new_contents.append(f'[{link_text}]({link_ref})')
     new_contents.append(contents[index:])
     doc_helpers.update_file(file_path=os.path.join(output_dir, new_filename),
                             contents="".join(new_contents))

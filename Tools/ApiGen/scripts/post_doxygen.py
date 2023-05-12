@@ -45,9 +45,7 @@ def _remove_attributes(elem, attrib_names):
             del elem.attrib[attrib_name]
 
 def _get_elem_text(elem):
-    if elem is not None:
-        return elem.text
-    return ''
+    return elem.text if elem is not None else ''
 
 def _set_subelem_text(elem, subelem_name, text):
     if not text:
@@ -68,7 +66,7 @@ def _find_matching_brackets(args):
         elif args[index] == ')':
             open_count -= 1
         if open_count == 0:
-            return args[0:index + 1], args[index + 1:]
+            return args[:index + 1], args[index + 1:]
     if open_count > 1:
         raise Exception("Unmatched brackets in: %s", repr(args))
     return args
@@ -93,11 +91,11 @@ def fix_uproperty(memberdef):
     _set_subelem_text(memberdef, 'name', member_name)
     memberdef.attrib['mutable'] = 'no' if member_type.startswith('const ') else 'yes'
     memberdef.attrib['static'] = 'no'
-    _set_subelem_text(memberdef, 'definition', 'UPROPERTY{}'.format(uproperty_params))
+    _set_subelem_text(memberdef, 'definition', f'UPROPERTY{uproperty_params}')
     # set the initializer (e.g. "=90.0f")
     if member_initializer:
         initializer_elem = ET.SubElement(memberdef, 'initializer')
-        initializer_elem.text = '= {}'.format(member_initializer)
+        initializer_elem.text = f'= {member_initializer}'
 
 def fix_include_path(tree):
     """
